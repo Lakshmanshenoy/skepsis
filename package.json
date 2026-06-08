@@ -7,6 +7,7 @@
     "build": "node scripts/build.js",
     "check-sync": "node scripts/check-sync.js",
     "evolve": "node scripts/evolve.js",
+    "investigate": "node scripts/investigate.js",
     "init": "node scripts/init-investigation.js"
   },
   "keywords": [
