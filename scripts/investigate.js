@@ -224,6 +224,7 @@ async function main() {
   const modelIdx = args.indexOf("--model");
   const maxTokensIdx = args.indexOf("--max-tokens");
   const dryRun = args.includes("--dry-run");
+  const noApi = args.includes("--no-api");
   const noConfirm = args.includes("--yes");
 
   if (topicIdx === -1 || !args[topicIdx + 1]) {
@@ -237,6 +238,7 @@ Options:
   --model <model-id>      Specific model (default: claude-sonnet-4 / gpt-4o)
   --max-tokens <n>        Max output tokens (default: 16000)
   --dry-run               Estimate cost without sending
+  --no-api                Assemble prompt and save to file without calling any API
   --yes                   Skip cost confirmation
 
 Environment:
@@ -299,12 +301,6 @@ Examples:
   }
   console.log("");
 
-  if (dryRun) {
-    console.log("🛑 Dry run — no API call made.");
-    console.log("   Use without --dry-run to execute.");
-    process.exit(0);
-  }
-
   // Setup investigation directory
   const slug = slugify(topic);
   const investigationDir = path.join(INVESTIGATIONS, slug);
@@ -313,7 +309,32 @@ Examples:
   if (!fs.existsSync(investigationDir)) {
     fs.mkdirSync(investigationDir, { recursive: true });
     fs.mkdirSync(path.join(investigationDir, "evidence"), { recursive: true });
-    console.log(`📁 Created investigation directory: investigations/${slug}/`);
+    console.log(`📁 Created: investigations/${slug}/`);
+  }
+
+  // Save assembled prompt for manual use (regardless of API mode)
+  const assembledPromptPath = path.join(investigationDir, "prompt.md");
+  fs.writeFileSync(assembledPromptPath, combined);
+  console.log(`📄 Assembled prompt saved: ${assembledPromptPath}`);
+  console.log(`   Tokens: ${formatTokens(inputTokens)} | Size: ${(combined.length / 1024).toFixed(1)} KB`);
+  console.log("");
+
+  if (dryRun) {
+    console.log("🛑 Dry run — no API call made.");
+    console.log("   Prompt is ready at investigations/<slug>/prompt.md");
+    console.log("   Use without --dry-run to execute via API, or --no-api to stay offline.");
+    process.exit(0);
+  }
+
+  if (noApi) {
+    console.log("✅ Prompt assembled. No API call made.");
+    console.log("\nManual workflow:");
+    console.log(`  1. Open: ${assembledPromptPath}`);
+    console.log(`  2. Copy the entire prompt`);
+    console.log(`  3. Paste into Kimchi / Claude / ChatGPT / etc.`);
+    console.log(`  4. Save the AI output as investigations/${slug}/article.md`);
+    console.log(`  5. Run: node scripts/evolve.js --lesson "What you learned"`);
+    process.exit(0);
   }
 
   // Confirmation
