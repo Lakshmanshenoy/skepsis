@@ -1,0 +1,245 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/Lakshmanshenoy/skepsis/schema/investigation.schema.json",
+  "title": "Skepsis Investigation",
+  "description": "Structured output schema for a Skepsis evidence-based investigation",
+  "type": "object",
+  "required": ["investigation", "verdict", "actionability", "evidence_summary"],
+  "properties": {
+    "investigation": {
+      "type": "object",
+      "required": ["topic", "mode", "framework_version", "date", "elapsed_time_ms"],
+      "properties": {
+        "topic": {
+          "type": "string",
+          "description": "The investigated topic or claim"
+        },
+        "mode": {
+          "type": "string",
+          "enum": ["core", "full-audit"],
+          "description": "Execution mode used"
+        },
+        "framework_version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+$",
+          "description": "Skepsis framework version (e.g. 5.2)"
+        },
+        "date": {
+          "type": "string",
+          "format": "date",
+          "description": "Investigation date (YYYY-MM-DD)"
+        },
+        "elapsed_time_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Time to complete investigation in milliseconds"
+        },
+        "backend": {
+          "type": "string",
+          "enum": ["anthropic", "openai", "manual"],
+          "description": "AI backend used, or manual if offline"
+        },
+        "model": {
+          "type": "string",
+          "description": "Specific model identifier"
+        }
+      }
+    },
+    "verdict": {
+      "type": "object",
+      "required": ["claim_status", "posterior_confidence", "failure_type", "leap_index"],
+      "properties": {
+        "claim_status": {
+          "type": "string",
+          "enum": ["Proven", "Skeptical", "Converging", "Contested"],
+          "description": "Claim Status Taxonomy classification"
+        },
+        "posterior_confidence": {
+          "type": "string",
+          "enum": ["Very High", "High", "Moderate", "Low", "Very Low"],
+          "description": "Final confidence assessment"
+        },
+        "confidence_pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Betting-confidence percentage if available"
+        },
+        "failure_type": {
+          "type": "string",
+          "enum": [
+            "Category Error",
+            "Dose Fallacy",
+            "Correlation ≠ Causation",
+            "Population Fallacy",
+            "Mechanism ≠ Outcome",
+            "Publication Bias",
+            "Surrogate Endpoint",
+            "Misattribution",
+            "Absence of Evidence",
+            "Replication Failure",
+            "None"
+          ],
+          "description": "Claim Failure Taxonomy type, or None if no failure"
+        },
+        "leap_index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5,
+          "description": "Marketing Leap Index (0=exact match, 5=evidence absent)"
+        },
+        "prior_plausibility": {
+          "type": "string",
+          "enum": ["Ordinary", "Extraordinary", "Revolutionary"],
+          "description": "Prior plausibility assessment"
+        },
+        "domain_modifier_applied": {
+          "type": "boolean",
+          "description": "Whether Domain Reproducibility Modifier was applied"
+        },
+        "domain": {
+          "type": "string",
+          "description": "Domain assessed (nutrition, psychology, etc.)"
+        }
+      }
+    },
+    "actionability": {
+      "type": "object",
+      "required": ["true", "meaningful", "actionable"],
+      "properties": {
+        "true": {
+          "type": "string",
+          "enum": ["True", "False", "Uncertain"],
+          "description": "Is the claim supported by evidence?"
+        },
+        "meaningful": {
+          "type": "string",
+          "enum": ["Clinically significant", "Marginal", "Negligible"],
+          "description": "Is the effect magnitude meaningful?"
+        },
+        "actionable": {
+          "type": "string",
+          "enum": ["Act", "Consider", "Ignore"],
+          "description": "Should a consumer act on this?"
+        },
+        "consumer_guidance": {
+          "type": "string",
+          "description": "Plain-language consumer recommendation"
+        }
+      }
+    },
+    "evidence_summary": {
+      "type": "object",
+      "required": ["studies_reviewed", "studies_supporting", "studies_contradicting", "studies_inconclusive"],
+      "properties": {
+        "studies_reviewed": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of studies considered"
+        },
+        "studies_supporting": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Studies supporting the claim"
+        },
+        "studies_contradicting": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Studies contradicting the claim"
+        },
+        "studies_inconclusive": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Studies with inconclusive or mixed results"
+        },
+        "systematic_reviews": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of systematic reviews/meta-analyses"
+        },
+        "rcts": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of randomized controlled trials"
+        },
+        "strongest_study": {
+          "type": "object",
+          "properties": {
+            "citation": { "type": "string" },
+            "credibility_score": { "type": "integer", "minimum": 0, "maximum": 9 },
+            "applicability_score": { "type": "integer", "minimum": 0, "maximum": 3 },
+            "grade": { "type": "string", "enum": ["High", "Moderate", "Low", "Very Low"] }
+          }
+        }
+      }
+    },
+    "missing_evidence": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Single most important missing study"
+        },
+        "importance": {
+          "type": "string",
+          "enum": ["High", "Medium", "Low"]
+        },
+        "expected_impact": {
+          "type": "string",
+          "enum": ["Strengthen", "Weaken", "Overturn"]
+        }
+      }
+    },
+    "uncertainty_budget": {
+      "type": "string",
+      "description": "Quantified remaining uncertainty"
+    },
+    "red_team_result": {
+      "type": "object",
+      "properties": {
+        "verdict_survived": { "type": "boolean" },
+        "revised_confidence": {
+          "type": "string",
+          "enum": ["Very High", "High", "Moderate", "Low", "Very Low"]
+        },
+        "strongest_counter_argument": { "type": "string" }
+      }
+    },
+    "verdict_stability": {
+      "type": "string",
+      "enum": ["Robust", "Moderate", "Fragile"],
+      "description": "Stability after removing strongest study"
+    },
+    "unknown_unknowns": {
+      "type": "object",
+      "properties": {
+        "risk_level": { "type": "string", "enum": ["Low", "Moderate", "High"] },
+        "primary_concern": { "type": "string" },
+        "confidence_reduction_applied": { "type": "boolean" }
+      }
+    },
+    "calibration": {
+      "type": "object",
+      "properties": {
+        "historical_analogue_quality": { "type": "string", "enum": ["High", "Moderate", "Low"] },
+        "overconfidence_risk": { "type": "string", "enum": ["High", "Moderate", "Low"] },
+        "adjustment_applied": { "type": "boolean" }
+      }
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["number", "citation", "credibility_score", "applicability_score"],
+        "properties": {
+          "number": { "type": "integer" },
+          "citation": { "type": "string" },
+          "credibility_score": { "type": "integer", "minimum": 0, "maximum": 9 },
+          "applicability_score": { "type": "integer", "minimum": 0, "maximum": 3 },
+          "grade": { "type": "string", "enum": ["High", "Moderate", "Low", "Very Low"] },
+          "doi": { "type": "string", "format": "uri" }
+        }
+      }
+    }
+  }
+}

@@ -6,6 +6,11 @@
   "scripts": {
     "build": "node scripts/build.js",
     "check-sync": "node scripts/check-sync.js",
+    "test": "node scripts/test.js --all",
+    "test:structure": "node scripts/test.js --required-sections",
+    "test:freeze": "node scripts/test.js --methodology-freeze",
+    "test:fire": "node scripts/test.js --fire-drill",
+    "test:schema": "node scripts/test.js --schema",
     "evolve": "node scripts/evolve.js",
     "investigate": "node scripts/investigate.js",
     "init": "node scripts/init-investigation.js"

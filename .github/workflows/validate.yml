@@ -1,0 +1,51 @@
+name: Skepsis Validation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  structure:
+    name: Prompt Structure & Sync
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Build derived prompts
+        run: node scripts/build.js
+
+      - name: Check version sync
+        run: node scripts/check-sync.js
+
+      - name: Verify required sections exist
+        run: node scripts/test.js --required-sections
+
+      - name: Verify no methodology bloat
+        run: node scripts/test.js --methodology-freeze
+
+      - name: Run hallucination fire-drill
+        run: node scripts/test.js --fire-drill
+
+  schema:
+    name: JSON Schema Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Validate schema files
+        run: node scripts/test.js --schema
