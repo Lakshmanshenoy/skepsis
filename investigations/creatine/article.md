@@ -68,7 +68,7 @@ This investigation asks: **Which creatine claims are solid? Which are overstated
 
 **Grey literature included:** ISSN position stands (2017, 2021), FDA GRAS notifications.
 
-**Limitations:** We did not search Embase, Scopus, or non-English language journals. We did not systematically review effects in pediatric populations (age <18) or rare metabolic disorders.
+**Limitations:** We did not search Embase, Scopus, or non-English language journals. We did not systematically review effects in pediatric populations (age `<18`) or rare metabolic disorders.
 
 ---
 
@@ -319,7 +319,7 @@ The cycling myth appears to have originated from steroid cycling protocols, whic
 | **Domain Modifier** | **Not applied** — sports nutrition replication for creatine is exceptionally strong |
 | **Confidence Ceiling** | Strength claims are Ordinary → can reach Very High. Hair/kidney claims are Extraordinary → capped at Very Low. |
 
-**Calibration Audit:** Historical analogue — previous supplement claims that reached creatine's evidence density (beta-alanine, caffeine) have universally proven correct for their primary claims. Claims with similar evidence profiles that later failed (HMB for muscle, chromium picolinate for weight loss) had replication rates <30%. Creatine's >50 RCT replication rate is an extreme outlier in sports nutrition. Risk of overconfidence: Low.
+**Calibration Audit:** Historical analogue — previous supplement claims that reached creatine's evidence density (beta-alanine, caffeine) have universally proven correct for their primary claims. Claims with similar evidence profiles that later failed (HMB for muscle, chromium picolinate for weight loss) had replication rates `<30%`. Creatine's >50 RCT replication rate is an extreme outlier in sports nutrition. Risk of overconfidence: Low.
 
 **Final Posterior Confidence:**
 - **Strength/power benefit:** Very High (~85%). If betting real money, ~85% probability creatine improves strength in a randomized sample.
